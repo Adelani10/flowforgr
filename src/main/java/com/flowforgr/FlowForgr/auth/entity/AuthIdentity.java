@@ -14,4 +14,5 @@ public class AuthIdentity {
     private String lastName;
     private String email;
     private List<String> roles;
+    private Boolean emailVerified;
 }

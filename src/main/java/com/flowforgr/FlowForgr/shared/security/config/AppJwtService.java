@@ -8,10 +8,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.function.Function;
@@ -19,17 +19,8 @@ import java.util.function.Function;
 @Service
 public class AppJwtService {
 
+    @Value("${JWT-SECRET-KEY}")
     private String secretKey;
-
-    public AppJwtService () {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGenerator.generateKey();
-            secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public String generateToken(String username, AppUser appUser) {
         Map<String, Object> claims = new HashMap<>(){{
@@ -38,6 +29,7 @@ public class AppJwtService {
             put("firstName", appUser.getFirstName());
             put("lastName", appUser.getLastName());
             put("email", appUser.getEmail());
+            put("emailVerified", appUser.isEmailVerified());
         }};
 
         return Jwts.builder().claims().add(claims)
@@ -84,6 +76,7 @@ public class AppJwtService {
                 .firstName(claims.get("FirstName", String.class))
                 .lastName(claims.get("LastName", String.class))
                 .roles(claims.get("Role", List.class))
+                .emailVerified(claims.get("emailVerified", Boolean.class))
                 .build();
     }
 }

@@ -1,7 +1,7 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
 
-import com.flowforgr.FlowForgr.shared.entity.AppBaseEntity;
+import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Table(name = "role")
-public class Role extends AppBaseEntity {
+public class Role extends FlowForgrBaseEntity {
 
     @Column(name="role_name", columnDefinition = "varchar(100)", unique = true)
     private String roleName;
@@ -20,8 +20,12 @@ public class Role extends AppBaseEntity {
     private String description;
 
     @Column(name="status", columnDefinition = "boolean")
-    @ColumnDefault(value = "false")
+    @ColumnDefault(value = "true")
     private boolean status;
+
+    @Column(name="is_custom", columnDefinition = "boolean")
+    @ColumnDefault(value = "false")
+    private boolean isCustom;
 
 //    @Column(name="profile_type", columnDefinition = "varchar(100)")
 //    @ColumnDefault(value = "'None'")

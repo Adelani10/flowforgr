@@ -49,6 +49,15 @@ public class AppJwtFilter extends OncePerRequestFilter {
             if(!ObjectUtils.isEmpty(username) && ObjectUtils.isEmpty(SecurityContextHolder.getContext().getAuthentication())) {
                 UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
                 if(appJwtService.validateToken(token, userDetails)) {
+
+                    boolean emailVerified = claims.get("emailVerified", Boolean.class);
+                    System.out.println("url::" + request.getRequestURI());
+                    if (!emailVerified && !request.getRequestURI().equals("/verify-email")) {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        sendErrorResponse(response, "Please verify your email");
+                        return;
+                    }
+
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             username, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

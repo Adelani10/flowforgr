@@ -1,6 +1,6 @@
 package com.flowforgr.FlowForgr.shared.security.config;
 
-import com.flowforgr.FlowForgr.auth.AppUserRepository;
+import com.flowforgr.FlowForgr.auth.repo.AppUserRepository;
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;

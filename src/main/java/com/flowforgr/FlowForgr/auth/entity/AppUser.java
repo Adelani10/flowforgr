@@ -1,7 +1,7 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
 
-import com.flowforgr.FlowForgr.shared.entity.AppBaseEntity;
+import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "app_user", uniqueConstraints = {@UniqueConstraint(name = "app_user_email_unique_info",
         columnNames ={"email","profile_type"}),@UniqueConstraint(name = "app_user_phone_unique_info",
         columnNames ={"phone_number","profile_type"})})
-public class AppUser extends AppBaseEntity {
+public class AppUser extends FlowForgrBaseEntity {
 
     @Column(name = "first_name", columnDefinition = "varchar(100)")
     @ColumnDefault(value = "''")
@@ -55,8 +55,16 @@ public class AppUser extends AppBaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_fk") })
     private Set<Role> roles;
 
+    @Column(name = "email_verified", columnDefinition = "boolean")
+    @ColumnDefault(value = "false")
+    private boolean emailVerified;
+
 //    @Column(name="gender", columnDefinition = "varchar(50)")
 //    @Enumerated(EnumType.STRING)
 //    private Gender gender;
+
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Organization.class)
+    @JoinColumn(name = "organization_fk")
+    private Organization organization;
 
 }
