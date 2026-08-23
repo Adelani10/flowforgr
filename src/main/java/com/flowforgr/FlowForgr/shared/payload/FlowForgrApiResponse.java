@@ -3,6 +3,7 @@ package com.flowforgr.FlowForgr.shared.payload;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public class FlowForgrApiResponse<T> {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime requestTime = LocalDateTime.now();
     private String requestType;
-    private String referenceId = UUID.randomUUID().toString();
+//    private String referenceId = UUID.randomUUID().toString();
     private boolean status;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -25,10 +26,9 @@ public class FlowForgrApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String error;
 
-    public FlowForgrApiResponse(LocalDateTime requestTime, String requestType, String referenceId, boolean status, String message, T data) {
+    public FlowForgrApiResponse(LocalDateTime requestTime, String requestType, boolean status, String message, T data) {
         this.requestTime = requestTime;
         this.requestType = requestType;
-        this.referenceId = referenceId;
         this.status = status;
         this.message = message;
         this.data = data;

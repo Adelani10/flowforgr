@@ -19,7 +19,7 @@ public class FlowForgrBaseEntity {
     @Column(name="id")
     private Long id;
 
-    @Column(name = "date_created", updatable = false, nullable = false)
+    @Column(name = "date_created", nullable = false)
     private LocalDateTime dateCreated;
 
     @Column(name = "date_updated", nullable = false)

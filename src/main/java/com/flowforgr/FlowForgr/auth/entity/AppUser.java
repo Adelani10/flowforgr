@@ -1,12 +1,14 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
 
+import com.flowforgr.FlowForgr.auth.enums.Gender;
 import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -53,15 +55,16 @@ public class AppUser extends FlowForgrBaseEntity {
     @JoinTable(name = "app_user_role_mapping",
             joinColumns = {@JoinColumn(name = "user_fk")},
             inverseJoinColumns = {@JoinColumn(name = "role_fk") })
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "email_verified", columnDefinition = "boolean")
     @ColumnDefault(value = "false")
     private boolean emailVerified;
 
-//    @Column(name="gender", columnDefinition = "varchar(50)")
-//    @Enumerated(EnumType.STRING)
-//    private Gender gender;
+    @Column(name="gender", columnDefinition = "varchar(50)")
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault(value = "'Unknown'")
+    private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = Organization.class)
     @JoinColumn(name = "organization_fk")

@@ -22,10 +22,10 @@ public class AppJwtService {
     @Value("${JWT-SECRET-KEY}")
     private String secretKey;
 
-    public String generateToken(String username, AppUser appUser) {
+    public String generateToken(AppUser appUser) {
         Map<String, Object> claims = new HashMap<>(){{
             put("id", appUser.getId());
-            put("roles", appUser.getRoles().stream().map(Role::getRoleName));
+            put("roles", appUser.getRoles().stream().map(Role::getRoleName).toList());
             put("firstName", appUser.getFirstName());
             put("lastName", appUser.getLastName());
             put("email", appUser.getEmail());
@@ -33,7 +33,7 @@ public class AppJwtService {
         }};
 
         return Jwts.builder().claims().add(claims)
-                .subject(username)
+                .subject(appUser.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + (60 * 60 * 1000)))
                 .and().signWith(getSecretKey())

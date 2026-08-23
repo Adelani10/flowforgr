@@ -38,10 +38,11 @@ public class AppJwtFilter extends OncePerRequestFilter {
         String token = "";
         String username = "";
 
+
         if (!ObjectUtils.isEmpty(authorizationHeader)) {
-            token = authorizationHeader.replace("Bearer ", "");
+//            token = authorizationHeader.replace("Bearer ", "");
+            token = authorizationHeader.substring(7);
             username = appJwtService.extractUserName(token);
-        }
 
         try{
             Claims claims = appJwtService.extractAllClaim(token);
@@ -52,7 +53,7 @@ public class AppJwtFilter extends OncePerRequestFilter {
 
                     boolean emailVerified = claims.get("emailVerified", Boolean.class);
                     System.out.println("url::" + request.getRequestURI());
-                    if (!emailVerified && !request.getRequestURI().equals("/verify-email")) {
+                    if (!emailVerified && !request.getRequestURI().equals("/api/v1/auth/verify-email")) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         sendErrorResponse(response, "Please verify your email");
                         return;
@@ -79,7 +80,7 @@ public class AppJwtFilter extends OncePerRequestFilter {
                 System.err.println("Error thrown in Exception block");
                 sendErrorResponse(response, "Authentication failed. Please try again.");
                 return;
-        }
+        }}
         filterChain.doFilter(request, response);
     }
 
@@ -89,11 +90,10 @@ public class AppJwtFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
 
         FlowForgrApiResponse<?> apiResponse = FlowForgrApiResponse.builder()
-                .referenceId(UUID.randomUUID().toString())
                 .requestTime(LocalDateTime.now())
                 .requestType(FlowForgrApiRequestType.OutBound.name())
-                .message(message)
                 .status(false)
+                .message(message)
                 .error("JWT Error")
                 .build();
 

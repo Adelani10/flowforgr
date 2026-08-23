@@ -32,7 +32,7 @@ public class AppSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(req -> req.requestMatchers("/login**", "/signup**")
+                .authorizeHttpRequests(req -> req.requestMatchers("/auth/login", "/auth/register")
                         .permitAll().anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
