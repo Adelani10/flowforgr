@@ -1,6 +1,7 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flowforgr.FlowForgr.auth.enums.Gender;
 import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,5 +71,22 @@ public class AppUser extends FlowForgrBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = Organization.class)
     @JoinColumn(name = "organization_fk")
     private Organization organization;
+
+    @JsonProperty("last_login_date")
+    private LocalDateTime lastLoginDate;
+
+    @Column(name = "first_login_date")
+    private LocalDateTime firstLoginDate;
+
+    @Column(name = "failed_login_attempt_count")
+    @ColumnDefault(value = "0")
+    private long failedLoginAttemptCount;
+
+    @Column(name="login_attempt_blocked", columnDefinition = "boolean")
+    @ColumnDefault(value = "false")
+    private boolean loginAttemptBlocked;
+
+    @Column(name = "next_release_date")
+    private LocalDateTime nextReleaseDate;
 
 }

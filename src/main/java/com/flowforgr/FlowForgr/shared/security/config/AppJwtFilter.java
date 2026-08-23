@@ -23,7 +23,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -40,47 +39,48 @@ public class AppJwtFilter extends OncePerRequestFilter {
 
 
         if (!ObjectUtils.isEmpty(authorizationHeader)) {
-//            token = authorizationHeader.replace("Bearer ", "");
-            token = authorizationHeader.substring(7);
-            username = appJwtService.extractUserName(token);
-
-        try{
-            Claims claims = appJwtService.extractAllClaim(token);
-
-            if(!ObjectUtils.isEmpty(username) && ObjectUtils.isEmpty(SecurityContextHolder.getContext().getAuthentication())) {
-                UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
-                if(appJwtService.validateToken(token, userDetails)) {
-
-                    boolean emailVerified = claims.get("emailVerified", Boolean.class);
-                    System.out.println("url::" + request.getRequestURI());
-                    if (!emailVerified && !request.getRequestURI().equals("/api/v1/auth/verify-email")) {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        sendErrorResponse(response, "Please verify your email");
-                        return;
-                    }
-
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            username, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    AuthIdentity authIdentity = appJwtService.configureAuthIdentity(claims);
-                    request.setAttribute("AUTH_IDENTITY", authIdentity);
+            try {
+                if (!authorizationHeader.startsWith("Bearer ")) {
+                    sendErrorResponse(response, "Invalid Authorization header");
+                    return;
                 }
-            }
-        } catch (ExpiredJwtException e) {
-                System.err.println("Error thrown in ExpiredJwtException block");
+                token = authorizationHeader.substring(7);
+                username = appJwtService.extractUserName(token);
+                Claims claims = appJwtService.extractAllClaim(token);
+
+                if (!ObjectUtils.isEmpty(username)&& ObjectUtils.isEmpty(SecurityContextHolder.getContext().getAuthentication())) {
+                    UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
+
+                    if (appJwtService.validateToken(token, userDetails)) {
+                        boolean emailVerified = claims.get("emailVerified", Boolean.class);
+                        if (!emailVerified && !request.getRequestURI().equals("/api/v1/auth/verify-email")) {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            sendErrorResponse(response,"Please verify your email" );
+                            return;
+                        }
+
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                        username,null,userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        AuthIdentity authIdentity =appJwtService.configureAuthIdentity(claims);
+                        request.setAttribute("AUTH_IDENTITY", authIdentity);
+                    }
+                }
+
+            } catch (ExpiredJwtException e) {
                 sendErrorResponse(response, "Your session has expired. Please log in again.");
                 return;
             } catch (JwtException e) {
-                System.err.println("Error thrown in JwtException block");
-                sendErrorResponse(response, "Invalid token. Please log in again.");
+                sendErrorResponse(response,"Invalid token. Please log in again.");
                 return;
             } catch (Exception e) {
 //                e.printStackTrace();
-                System.err.println("Error thrown in Exception block");
-                sendErrorResponse(response, "Authentication failed. Please try again.");
+                sendErrorResponse(response,"Authentication failed. Please try again.");
                 return;
-        }}
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
 
@@ -88,6 +88,7 @@ public class AppJwtFilter extends OncePerRequestFilter {
     private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         FlowForgrApiResponse<?> apiResponse = FlowForgrApiResponse.builder()
                 .requestTime(LocalDateTime.now())
@@ -99,5 +100,6 @@ public class AppJwtFilter extends OncePerRequestFilter {
 
         ObjectMapper mapper = new ObjectMapper();
         response.getWriter().write(mapper.writeValueAsString(apiResponse));
+        response.getWriter().flush();
     }
 }

@@ -2,6 +2,7 @@ package com.flowforgr.FlowForgr.auth.handlers.validation;
 
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
+import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrLoginRequest;
 import com.flowforgr.FlowForgr.auth.records.AuthorityInfo;
 import com.flowforgr.FlowForgr.auth.records.ValidationResult;
 import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrRegisterOrganizationRequest;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -77,8 +79,8 @@ public class AuthHandlerValidation {
     }
 
 
-    public boolean isLoginPasswordMatches(String rawPassword, AppUser appUsersRecord) {
-        return passwordEncoder.matches(rawPassword,appUsersRecord.getPassword());
+    public boolean isLoginPasswordMatches(String rawPassword, AppUser appUser) {
+        return passwordEncoder.matches(rawPassword,appUser.getPassword());
     }
 
     public boolean isCurrentPasswordMatches(String rawPassword, String hashedPassword) {
@@ -117,5 +119,44 @@ public class AuthHandlerValidation {
                 .expirationMinutes(120).authorityInfos(authorityInfoList)
                 .creationAt(LocalDateTime.now()).expirationDate(LocalDateTime.now().plusHours(2))
                 .build();
+    }
+
+    public ValidationResult validateLoginAppUserOrganization(FlowForgrLoginRequest request, AppUser appUser) {
+
+        ValidationResult result = new ValidationResult(true, "");
+
+        if(!isLoginPasswordMatches(request.getPassword(), appUser)){
+            return new ValidationResult(false, "Invalid credentials");
+        }
+
+        if(appUser.isAccountStatus()) {
+            return new ValidationResult(false, "Account inactive");
+        }
+
+        if(appUser.isAccountBlocked()) {
+            return new ValidationResult(false, "Account inactive");
+        }
+
+        if(appUser.isLoginAttemptBlocked()) {
+            Duration duration = Duration.between(LocalDateTime.now(), appUser.getNextReleaseDate());
+            long days = duration.toDays();
+            long hours = duration.toHours() % 24;
+            long minutes = duration.toMinutes() % 60;
+            long seconds = duration.getSeconds() % 60;
+
+            String timeLeft;
+
+            if (days > 0) {
+                timeLeft = String.format("%dd %dh %dm", days, hours, minutes);
+            } else if (hours > 0) {
+                timeLeft = String.format("%dh %dm", hours, minutes);
+            } else {
+                timeLeft = String.format("%dm %ds", minutes, seconds);
+            }
+            return new ValidationResult
+                    (false, "Account temporarily locked, Please try again in " + timeLeft + " .");
+        }
+
+        return result;
     }
 }

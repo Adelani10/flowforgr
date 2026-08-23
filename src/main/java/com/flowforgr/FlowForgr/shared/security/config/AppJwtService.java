@@ -35,7 +35,7 @@ public class AppJwtService {
         return Jwts.builder().claims().add(claims)
                 .subject(appUser.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (60 * 60 * 1000)))
+                .expiration(new Date(System.currentTimeMillis() + (2 * 60 * 60 * 1000)))
                 .and().signWith(getSecretKey())
                 .compact();
     }

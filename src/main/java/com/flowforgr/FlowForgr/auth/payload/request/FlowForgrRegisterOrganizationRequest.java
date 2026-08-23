@@ -10,13 +10,10 @@ import com.flowforgr.FlowForgr.shared.engine.annotation.ValidEmail;
 import com.flowforgr.FlowForgr.shared.engine.annotation.ValidPassword;
 import com.flowforgr.FlowForgr.shared.engine.annotation.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

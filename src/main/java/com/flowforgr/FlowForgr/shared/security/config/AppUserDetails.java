@@ -36,21 +36,21 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return appUser.isAccountBlocked();
+        return !appUser.isAccountBlocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return appUser.isAccountStatus();
+        return !appUser.isAccountStatus();
     }
 }
