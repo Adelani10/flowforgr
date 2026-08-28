@@ -2,15 +2,16 @@ package com.flowforgr.FlowForgr.auth.handlers.validation;
 
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrLoginRequest;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrLoginRequest;
 import com.flowforgr.FlowForgr.auth.records.AuthorityInfo;
 import com.flowforgr.FlowForgr.auth.records.ValidationResult;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrRegisterOrganizationRequest;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrRegisterOrganizationRequest;
 import com.flowforgr.FlowForgr.auth.repo.AppUserRepository;
 import com.flowforgr.FlowForgr.auth.repo.OrganizationRepository;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrGeneratedAuthToken;
 import com.flowforgr.FlowForgr.shared.security.config.AppJwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -31,30 +32,30 @@ public class AuthHandlerValidation {
 
     public ValidationResult validateRegisterAppUserOrganization(FlowForgrRegisterOrganizationRequest flowForgrRegisterOrganizationRequest) {
 
-        ValidationResult result = new ValidationResult(true, "");
+        ValidationResult result = new ValidationResult(true, "", null);
 
         if(isOrgExistByEmail(flowForgrRegisterOrganizationRequest.getEmail())){
-            return new ValidationResult(false, "Organization with email already exists");
+            return new ValidationResult(false, "Organization with email already exists", HttpStatus.CONFLICT);
         }
 
         if(isOrgExistByPhone(flowForgrRegisterOrganizationRequest.getOrgPhoneNumber())) {
-            return new ValidationResult(false, "Organization with phone number already exists");
+            return new ValidationResult(false, "Organization with phone number already exists", HttpStatus.CONFLICT);
         }
 
         if(isAppUserExistByEmail(flowForgrRegisterOrganizationRequest.getEmail())){
-            return new ValidationResult(false, "App user with email already exists");
+            return new ValidationResult(false, "App user with email already exists", HttpStatus.CONFLICT);
         }
 
         if(isAppUserExistByPhone(flowForgrRegisterOrganizationRequest.getOrgPhoneNumber())) {
-            return new ValidationResult(false, "App user with phone number already exists");
+            return new ValidationResult(false, "App user with phone number already exists", HttpStatus.CONFLICT);
         }
 
         if(!isPasswordNotSameAsUsername(flowForgrRegisterOrganizationRequest.getPassword(), flowForgrRegisterOrganizationRequest.getEmail())) {
-            return new ValidationResult(false, "Password cannot be same as email");
+            return new ValidationResult(false, "Password cannot be same as email", HttpStatus.BAD_REQUEST);
         }
 
         if(!isNewAndConfirmPasswordMatches(flowForgrRegisterOrganizationRequest.getPassword(), flowForgrRegisterOrganizationRequest.getConfirmPassword())) {
-            return new ValidationResult(false, "Passwords don't match");
+            return new ValidationResult(false, "Passwords don't match", HttpStatus.BAD_REQUEST);
         }
 
         return result;
@@ -123,40 +124,43 @@ public class AuthHandlerValidation {
 
     public ValidationResult validateLoginAppUserOrganization(FlowForgrLoginRequest request, AppUser appUser) {
 
-        ValidationResult result = new ValidationResult(true, "");
+        ValidationResult result = new ValidationResult(true, "", null);
 
         if(!isLoginPasswordMatches(request.getPassword(), appUser)){
-            return new ValidationResult(false, "Invalid credentials");
+            return new ValidationResult(false, "Invalid credentials", HttpStatus.NOT_FOUND);
         }
 
         if(appUser.isAccountStatus()) {
-            return new ValidationResult(false, "Account inactive");
+            return new ValidationResult(false, "Account inactive", HttpStatus.FORBIDDEN);
         }
 
         if(appUser.isAccountBlocked()) {
-            return new ValidationResult(false, "Account inactive");
+            return new ValidationResult(false, "Account inactive",  HttpStatus.FORBIDDEN);
         }
 
         if(appUser.isLoginAttemptBlocked()) {
-            Duration duration = Duration.between(LocalDateTime.now(), appUser.getNextReleaseDate());
-            long days = duration.toDays();
-            long hours = duration.toHours() % 24;
-            long minutes = duration.toMinutes() % 60;
-            long seconds = duration.getSeconds() % 60;
+            LocalDateTime releaseDate = appUser.getNextReleaseDate();
+            LocalDateTime now = LocalDateTime.now();
+            if(releaseDate.isAfter(now)) {
+                Duration duration = Duration.between(now, releaseDate);
+                long days = duration.toDays();
+                long hours = duration.toHours() % 24;
+                long minutes = duration.toMinutes() % 60;
+                long seconds = duration.getSeconds() % 60;
 
-            String timeLeft;
+                String timeLeft;
 
-            if (days > 0) {
-                timeLeft = String.format("%dd %dh %dm", days, hours, minutes);
-            } else if (hours > 0) {
-                timeLeft = String.format("%dh %dm", hours, minutes);
-            } else {
-                timeLeft = String.format("%dm %ds", minutes, seconds);
+                if (days > 0) {
+                    timeLeft = String.format("%dd %dh %dm", days, hours, minutes);
+                } else if (hours > 0) {
+                    timeLeft = String.format("%dh %dm", hours, minutes);
+                } else {
+                    timeLeft = String.format("%dm %ds", minutes, seconds);
+                }
+                return new ValidationResult
+                        (false, "Account temporarily locked, Please try again in " + timeLeft + " .",  HttpStatus.FORBIDDEN);
             }
-            return new ValidationResult
-                    (false, "Account temporarily locked, Please try again in " + timeLeft + " .");
         }
-
         return result;
     }
 }

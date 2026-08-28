@@ -3,8 +3,8 @@ package com.flowforgr.FlowForgr.auth.controllers;
 
 import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.handlers.AuthHandler;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrLoginRequest;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrRegisterOrganizationRequest;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrLoginRequest;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrRegisterOrganizationRequest;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,6 @@ public class AuthController {
     public ResponseEntity<FlowForgrApiResponse<?>> registerAppUserOrganization
             (@Valid @RequestBody FlowForgrRegisterOrganizationRequest request) {
         return authHandler.handleRegisterAppUserOrganization(request);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<FlowForgrApiResponse<?>> test(@RequestAttribute ("AUTH_IDENTITY")AuthIdentity  authIdentity) {
-        return authHandler.handleTest(authIdentity);
     }
 
     @PostMapping("/login")

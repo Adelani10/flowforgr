@@ -1,5 +1,6 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
+import com.flowforgr.FlowForgr.auth.enums.UserType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +16,6 @@ public class AuthIdentity {
     private String email;
     private List<String> roles;
     private Boolean emailVerified;
+    private String userType;
+    private Long organizationId;
 }

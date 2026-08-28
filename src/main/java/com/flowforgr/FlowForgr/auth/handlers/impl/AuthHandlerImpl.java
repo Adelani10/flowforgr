@@ -1,15 +1,14 @@
 package com.flowforgr.FlowForgr.auth.handlers.impl;
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.entity.Organization;
 import com.flowforgr.FlowForgr.auth.entity.Role;
 import com.flowforgr.FlowForgr.auth.handlers.AuthHandler;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrLoginRequest;
-import com.flowforgr.FlowForgr.auth.payload.response.FlowForgrLoginResponse;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrLoginRequest;
+import com.flowforgr.FlowForgr.auth.payload.response.auth.FlowForgrLoginResponse;
 import com.flowforgr.FlowForgr.auth.records.ValidationResult;
 import com.flowforgr.FlowForgr.auth.handlers.validation.AuthHandlerValidation;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrRegisterOrganizationRequest;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrRegisterOrganizationRequest;
 import com.flowforgr.FlowForgr.auth.repo.AppUserRepository;
 import com.flowforgr.FlowForgr.auth.repo.OrganizationRepository;
 import com.flowforgr.FlowForgr.auth.repo.RoleRepository;
@@ -57,7 +56,8 @@ public class AuthHandlerImpl implements AuthHandler {
         ValidationResult response = authHandlerValidation.validateRegisterAppUserOrganization(flowForgrRegisterOrganizationRequest);
 
         if(!response.isValid()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(createFailureResponse("Error", response.errorMessage()));
+            return ResponseEntity.status(!ObjectUtils.isEmpty(response.httpStatus()) ? response.httpStatus() : HttpStatus.BAD_REQUEST)
+                    .body(createFailureResponse("Error", response.errorMessage()));
         }
 
         String hashedPassword = authHandlerValidation.hashPassword(flowForgrRegisterOrganizationRequest.getPassword());
@@ -79,11 +79,6 @@ public class AuthHandlerImpl implements AuthHandler {
         FlowForgrGeneratedAuthToken flowForgrGeneratedAuthToken = authHandlerValidation.generateAuthToken(savedUser);
         FlowForgrLoginResponse res = buildFlowForgrLoginResponse(appUser, savedOrg, flowForgrGeneratedAuthToken);
         return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse(res, "Organization created successfully"));
-    }
-
-    @Override
-    public ResponseEntity<FlowForgrApiResponse<?>> handleTest(AuthIdentity authIdentity) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse("Success", "Test successful for " + authIdentity.getEmail()));
     }
 
     /**
@@ -109,8 +104,9 @@ public class AuthHandlerImpl implements AuthHandler {
                 }
                 appUserRepository.save(appUser);
             }
-            System.out.println(validationResult.errorMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createFailureResponse("Error", validationResult.errorMessage()));
+//            System.out.println(validationResult.errorMessage());
+            return ResponseEntity.status(!ObjectUtils.isEmpty(validationResult.httpStatus()) ? validationResult.httpStatus() : HttpStatus.BAD_REQUEST)
+                    .body(createFailureResponse("Error", validationResult.errorMessage()));
         }
 
         appUser.setFirstLoginDate(!ObjectUtils.isEmpty(appUser.getFirstLoginDate()) ? appUser.getFirstLoginDate() : LocalDateTime.now());

@@ -1,10 +1,9 @@
-package com.flowforgr.FlowForgr.auth.payload.response;
+package com.flowforgr.FlowForgr.auth.payload.response.auth;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.flowforgr.FlowForgr.auth.entity.Organization;
 import com.flowforgr.FlowForgr.auth.records.AuthorityInfo;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrGeneratedAuthToken;
 import lombok.AllArgsConstructor;

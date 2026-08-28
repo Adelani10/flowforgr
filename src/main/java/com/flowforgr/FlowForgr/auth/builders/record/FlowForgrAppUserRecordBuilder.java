@@ -2,8 +2,8 @@ package com.flowforgr.FlowForgr.auth.builders.record;
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
 import com.flowforgr.FlowForgr.auth.entity.Organization;
-import com.flowforgr.FlowForgr.auth.payload.request.FlowForgrRegisterOrganizationRequest;
-import com.flowforgr.FlowForgr.auth.repo.AppUserRepository;
+import com.flowforgr.FlowForgr.auth.enums.UserType;
+import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrRegisterOrganizationRequest;
 import org.springframework.util.ObjectUtils;
 
 public class FlowForgrAppUserRecordBuilder {
@@ -16,9 +16,7 @@ public class FlowForgrAppUserRecordBuilder {
         appUser.setPhoneNumber(ObjectUtils.isEmpty(request.getPhoneNumber()) ? appUser.getPhoneNumber() : request.getPhoneNumber());
         appUser.setGender(ObjectUtils.isEmpty(request.getGender()) ? appUser.getGender() : request.getGender());
         appUser.setPassword(ObjectUtils.isEmpty(request.getPassword()) ? appUser.getPassword() : hashedPassword);
-
-
-
+        appUser.setUserType(UserType.Client);
         return appUser;
     }
 

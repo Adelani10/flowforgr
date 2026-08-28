@@ -1,4 +1,4 @@
-package com.flowforgr.FlowForgr.auth.payload.request;
+package com.flowforgr.FlowForgr.auth.payload.request.auth;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

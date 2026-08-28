@@ -2,7 +2,7 @@ package com.flowforgr.FlowForgr.auth.builders.response;
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
 import com.flowforgr.FlowForgr.auth.entity.Organization;
-import com.flowforgr.FlowForgr.auth.payload.response.FlowForgrLoginResponse;
+import com.flowforgr.FlowForgr.auth.payload.response.auth.FlowForgrLoginResponse;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrGeneratedAuthToken;
 
 public class FlowForgrAuthPayloadBuilder {

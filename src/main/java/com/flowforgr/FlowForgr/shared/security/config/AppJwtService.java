@@ -4,6 +4,7 @@ package com.flowforgr.FlowForgr.shared.security.config;
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
 import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.entity.Role;
+import com.flowforgr.FlowForgr.auth.enums.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -30,6 +31,8 @@ public class AppJwtService {
             put("lastName", appUser.getLastName());
             put("email", appUser.getEmail());
             put("emailVerified", appUser.isEmailVerified());
+            put("userType", appUser.getUserType().name());
+            put("organizationId", appUser.getOrganization().getId());
         }};
 
         return Jwts.builder().claims().add(claims)
@@ -77,6 +80,8 @@ public class AppJwtService {
                 .lastName(claims.get("LastName", String.class))
                 .roles(claims.get("Role", List.class))
                 .emailVerified(claims.get("emailVerified", Boolean.class))
+                .userType(claims.get("userType", String.class))
+                .organizationId(claims.get("organizationId", Long.class))
                 .build();
     }
 }

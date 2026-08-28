@@ -1,6 +1,7 @@
 package com.flowforgr.FlowForgr.auth.entity;
 
 
+import com.flowforgr.FlowForgr.auth.enums.UserType;
 import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,12 +28,15 @@ public class Role extends FlowForgrBaseEntity {
     @ColumnDefault(value = "false")
     private boolean isCustom;
 
-//    @Column(name="profile_type", columnDefinition = "varchar(100)")
-//    @ColumnDefault(value = "'None'")
-//    @Enumerated(EnumType.STRING)
-//    private ProfileType profileType;
+    @Column(name="user_type", columnDefinition = "varchar(100)")
+    @ColumnDefault(value = "'Client'")
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
-//    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Corporate.class)
-//    @JoinColumn(name="corporate_fk")
-//    private Corporate corporate;
+//    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Organization.class)
+//    @JoinColumn(name="organization_fk")
+//    private Organization organization;
+
+    @Column(name = "organization_fk")
+    private Long organizationFk;
 }

@@ -3,6 +3,7 @@ package com.flowforgr.FlowForgr.auth.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flowforgr.FlowForgr.auth.enums.Gender;
+import com.flowforgr.FlowForgr.auth.enums.UserType;
 import com.flowforgr.FlowForgr.shared.entity.FlowForgrBaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -71,6 +72,11 @@ public class AppUser extends FlowForgrBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = Organization.class)
     @JoinColumn(name = "organization_fk")
     private Organization organization;
+
+    @Column(name="user_type", columnDefinition = "varchar(100)")
+    @ColumnDefault(value = "'Client'")
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
     @JsonProperty("last_login_date")
     private LocalDateTime lastLoginDate;

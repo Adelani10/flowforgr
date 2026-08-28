@@ -69,13 +69,15 @@ public class AppJwtFilter extends OncePerRequestFilter {
                 }
 
             } catch (ExpiredJwtException e) {
+                e.printStackTrace();
                 sendErrorResponse(response, "Your session has expired. Please log in again.");
                 return;
             } catch (JwtException e) {
+                e.printStackTrace();
                 sendErrorResponse(response,"Invalid token. Please log in again.");
                 return;
             } catch (Exception e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 sendErrorResponse(response,"Authentication failed. Please try again.");
                 return;
             }

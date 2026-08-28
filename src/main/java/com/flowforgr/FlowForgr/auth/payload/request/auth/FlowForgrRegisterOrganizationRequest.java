@@ -1,4 +1,4 @@
-package com.flowforgr.FlowForgr.auth.payload.request;
+package com.flowforgr.FlowForgr.auth.payload.request.auth;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,7 +11,6 @@ import com.flowforgr.FlowForgr.shared.engine.annotation.ValidPassword;
 import com.flowforgr.FlowForgr.shared.engine.annotation.ValidPhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Builder
 @Data
