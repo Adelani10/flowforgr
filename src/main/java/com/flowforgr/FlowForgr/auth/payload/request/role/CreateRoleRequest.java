@@ -27,4 +27,7 @@ public class CreateRoleRequest {
 
     @JsonProperty("userType")
     private String userType;
+
+    @JsonProperty("id")
+    private Long id;
 }

@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
+import java.util.Optional;
 
 import static com.flowforgr.FlowForgr.shared.util.FlowForgrResponseUtils.createFailureResponse;
 import static com.flowforgr.FlowForgr.shared.util.FlowForgrResponseUtils.createSuccessResponse;
@@ -40,9 +44,44 @@ public class RoleHandlerImpl implements RoleHandler {
         if(!result.isValid()) {
             return ResponseEntity.status(result.httpStatus()).body(createFailureResponse("Error", result.errorMessage()));
         }
-        Role role = RoleRecordBuilder.buildRoleRecordOperation(request, UserType.valueOf(authIdentity.getUserType()));
+        Role role = RoleRecordBuilder.buildRoleRecordOperation(request, authIdentity, null);
         roleRepository.save(role);
         CreateRoleResponse response = RoleResponseBuilder.buildCreateRoleResponse(role);
         return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse(response, "Role created successfully"));
+    }
+
+    @Override
+    public ResponseEntity<FlowForgrApiResponse<?>> handleUpdateRole(CreateRoleRequest request, AuthIdentity authIdentity) {
+        ValidationResult result = roleHandlerValidation.validateModifyRole(request, authIdentity);
+
+        if(!result.isValid()) {
+            return ResponseEntity.status(result.httpStatus()).body(createFailureResponse("Error", result.errorMessage()));
+        }
+
+        Role roleRecord = roleRepository.findRoleById(request.getId());
+        if(ObjectUtils.isEmpty(roleRecord)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(createFailureResponse("Error", "Role not found"));
+        }
+
+        Role role = RoleRecordBuilder.buildRoleRecordOperation(request, authIdentity, roleRecord);
+        roleRepository.save(role);
+        CreateRoleResponse response = RoleResponseBuilder.buildCreateRoleResponse(role);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse(response, "Role updated successfully"));
+    }
+
+    @Override
+    public ResponseEntity<FlowForgrApiResponse<?>> deleteRole(Long id, AuthIdentity authIdentity) {
+        List<String> roles = authIdentity.getRoles();
+        if(ObjectUtils.isEmpty(roles) || roles.stream().noneMatch(role -> role.equalsIgnoreCase("ORGANIZATION_ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createFailureResponse("Error", "User not authorized"));
+        }
+        Role roleRecord = roleRepository.findRoleById(id);
+        if(ObjectUtils.isEmpty(roleRecord)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(createFailureResponse("Error", "Role not found"));
+        }
+        roleRecord.setDeleted(true);
+        roleRepository.save(roleRecord);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse("Success", "Role deleted successfully"));
+
     }
 }

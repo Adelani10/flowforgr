@@ -8,4 +8,6 @@ import org.springframework.http.ResponseEntity;
 public interface RoleHandler {
 
     ResponseEntity<FlowForgrApiResponse<?>> handleCreateRole(CreateRoleRequest request, AuthIdentity authIdentity);
+    ResponseEntity<FlowForgrApiResponse<?>> handleUpdateRole(CreateRoleRequest request, AuthIdentity authIdentity);
+    ResponseEntity<FlowForgrApiResponse<?>> deleteRole(Long id, AuthIdentity authIdentity);
 }

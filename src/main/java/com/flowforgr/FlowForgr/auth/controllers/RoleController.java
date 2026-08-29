@@ -20,4 +20,14 @@ public class RoleController {
     public ResponseEntity<FlowForgrApiResponse<?>> createRole(@RequestBody CreateRoleRequest request, @RequestAttribute("AUTH_IDENTITY") AuthIdentity authIdentity) {
         return roleHandler.handleCreateRole(request, authIdentity);
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<FlowForgrApiResponse<?>> updateRole(@RequestBody CreateRoleRequest request, @RequestAttribute("AUTH_IDENTITY") AuthIdentity authIdentity) {
+        return roleHandler.handleUpdateRole(request, authIdentity);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<FlowForgrApiResponse<?>> deleteRole(@PathVariable Long id, @RequestAttribute("AUTH_IDENTITY") AuthIdentity authIdentity) {
+        return roleHandler.deleteRole(id, authIdentity);
+    }
 }

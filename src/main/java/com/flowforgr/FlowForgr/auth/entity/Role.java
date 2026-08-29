@@ -39,4 +39,8 @@ public class Role extends FlowForgrBaseEntity {
 
     @Column(name = "organization_fk")
     private Long organizationFk;
+
+    @Column(name = "deleted")
+    @ColumnDefault(value = "false")
+    private boolean deleted;
 }

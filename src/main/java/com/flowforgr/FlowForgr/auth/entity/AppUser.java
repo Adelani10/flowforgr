@@ -54,7 +54,7 @@ public class AppUser extends FlowForgrBaseEntity {
     @ColumnDefault(value = "false")
     private boolean isAccountBlocked;
 
-    @ManyToMany(fetch = FetchType.LAZY, targetEntity = Role.class, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "app_user_role_mapping",
             joinColumns = {@JoinColumn(name = "user_fk")},
             inverseJoinColumns = {@JoinColumn(name = "role_fk") })
