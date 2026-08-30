@@ -1,6 +1,5 @@
-package com.flowforgr.FlowForgr.auth.entity;
+package com.flowforgr.FlowForgr.shared.entity;
 
-import com.flowforgr.FlowForgr.auth.enums.UserType;
 import lombok.Builder;
 import lombok.Data;
 

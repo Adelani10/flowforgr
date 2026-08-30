@@ -1,7 +1,6 @@
 package com.flowforgr.FlowForgr.auth.controllers;
 
 
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.handlers.AuthHandler;
 import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrLoginRequest;
 import com.flowforgr.FlowForgr.auth.payload.request.auth.FlowForgrRegisterOrganizationRequest;

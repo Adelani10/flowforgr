@@ -34,4 +34,8 @@ public class WorkFlow extends FlowForgrBaseEntity {
     @ColumnDefault(value = "Draft")
     @Enumerated(EnumType.STRING)
     private WorkFlowState workFlowState;
+
+    @Column(name = "work_flow_index")
+    @ColumnDefault(value = "0")
+    private Long workFlowIndex;
 }

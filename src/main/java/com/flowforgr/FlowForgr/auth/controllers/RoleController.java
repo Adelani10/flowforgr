@@ -1,7 +1,7 @@
 package com.flowforgr.FlowForgr.auth.controllers;
 
 
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
+import com.flowforgr.FlowForgr.shared.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.handlers.RoleHandler;
 import com.flowforgr.FlowForgr.auth.payload.request.role.CreateRoleRequest;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrApiResponse;

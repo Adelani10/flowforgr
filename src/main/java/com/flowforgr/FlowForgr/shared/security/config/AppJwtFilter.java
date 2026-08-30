@@ -1,6 +1,6 @@
 package com.flowforgr.FlowForgr.shared.security.config;
 
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
+import com.flowforgr.FlowForgr.shared.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.shared.enums.FlowForgrApiRequestType;
 import com.flowforgr.FlowForgr.shared.payload.FlowForgrApiResponse;
 import io.jsonwebtoken.Claims;

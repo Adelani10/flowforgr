@@ -2,9 +2,8 @@ package com.flowforgr.FlowForgr.shared.security.config;
 
 
 import com.flowforgr.FlowForgr.auth.entity.AppUser;
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
+import com.flowforgr.FlowForgr.shared.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.entity.Role;
-import com.flowforgr.FlowForgr.auth.enums.UserType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

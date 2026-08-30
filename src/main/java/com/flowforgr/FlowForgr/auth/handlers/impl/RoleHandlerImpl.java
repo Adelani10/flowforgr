@@ -2,7 +2,7 @@ package com.flowforgr.FlowForgr.auth.handlers.impl;
 
 import com.flowforgr.FlowForgr.auth.builders.payload.RoleResponseBuilder;
 import com.flowforgr.FlowForgr.auth.builders.record.RoleRecordBuilder;
-import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
+import com.flowforgr.FlowForgr.shared.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.entity.Role;
 import com.flowforgr.FlowForgr.auth.handlers.RoleHandler;
 import com.flowforgr.FlowForgr.auth.handlers.validation.RoleHandlerValidation;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.flowforgr.FlowForgr.shared.util.FlowForgrResponseUtils.createFailureResponse;
 import static com.flowforgr.FlowForgr.shared.util.FlowForgrResponseUtils.createSuccessResponse;
