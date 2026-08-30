@@ -4,7 +4,6 @@ import com.flowforgr.FlowForgr.auth.builders.payload.RoleResponseBuilder;
 import com.flowforgr.FlowForgr.auth.builders.record.RoleRecordBuilder;
 import com.flowforgr.FlowForgr.auth.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.auth.entity.Role;
-import com.flowforgr.FlowForgr.auth.enums.UserType;
 import com.flowforgr.FlowForgr.auth.handlers.RoleHandler;
 import com.flowforgr.FlowForgr.auth.handlers.validation.RoleHandlerValidation;
 import com.flowforgr.FlowForgr.auth.payload.request.role.CreateRoleRequest;
