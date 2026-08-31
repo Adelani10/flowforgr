@@ -1,9 +1,12 @@
-package com.flowforgr.FlowForgr.workflow.payload.request.workflow;
+package com.flowforgr.FlowForgr.workflow.payload.request.workFlowStep;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Builder
@@ -23,4 +26,13 @@ public class CreateWorkFlowStepsRequest {
 
     @JsonProperty("roleId")
     private Long roleId;
+
+    @JsonProperty("workFlowId")
+    private Long workFlowId;
+
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonIgnore
+    private Long workFlowStepIndex;
 }

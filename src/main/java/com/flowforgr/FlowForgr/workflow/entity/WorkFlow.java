@@ -31,11 +31,7 @@ public class WorkFlow extends FlowForgrBaseEntity {
     private Set<WorkFlowStep> roles = new HashSet<>();
 
     @Column(name = "work_flow_state")
-    @ColumnDefault(value = "Draft")
+    @ColumnDefault(value = "'Draft'")
     @Enumerated(EnumType.STRING)
     private WorkFlowState workFlowState;
-
-    @Column(name = "work_flow_index")
-    @ColumnDefault(value = "0")
-    private Long workFlowIndex;
 }

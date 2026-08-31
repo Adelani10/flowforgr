@@ -25,4 +25,15 @@ public class WorkFlowStep extends FlowForgrBaseEntity {
     @JoinColumn(name = "assigned_role", nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private Role assignedRole;
+
+    @Column(name = "work_flow_step_index")
+    @ColumnDefault(value = "0")
+    private Long workFlowStepIndex;
+
+    @Column(name = "work_flow_fk")
+    private Long workFlowFk;
+
+    @Column(name = "status")
+    @ColumnDefault(value = "false")
+    private boolean status;
 }
