@@ -7,16 +7,14 @@ import com.flowforgr.FlowForgr.auth.repo.RoleRepository;
 import com.flowforgr.FlowForgr.shared.entity.AuthIdentity;
 import com.flowforgr.FlowForgr.shared.util.FlowForgrStringUtil;
 import com.flowforgr.FlowForgr.workflow.payload.request.workFlowStep.CreateWorkFlowStepsRequest;
+import com.flowforgr.FlowForgr.workflow.payload.request.workflow.CreateWorkFlowRequest;
 import com.flowforgr.FlowForgr.workflow.repo.WorkFlowRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-
-import static com.flowforgr.FlowForgr.shared.util.FlowForgrResponseUtils.createFailureResponse;
 
 @Component
 @RequiredArgsConstructor
@@ -69,5 +67,40 @@ public class WorkFlowHandlerValidation {
             return validationResult;
         }
         return validateWorkFlowStepCreationRequest(request, role, authIdentity);
+    }
+
+    public ValidationResult validateWorkFlowCreationRequest(CreateWorkFlowRequest request, AuthIdentity authIdentity, List<Role> roleList, List<Long> requestStepRoleIds) {
+        ValidationResult result = new ValidationResult(true, "", HttpStatus.OK);
+
+        List<String> roles = authIdentity.getRoles();
+        if(ObjectUtils.isEmpty(roles) || roles.stream().noneMatch(r -> r.equalsIgnoreCase("ORGANIZATION_ADMIN"))) {
+            result = new ValidationResult(false, "User not authorized", HttpStatus.UNAUTHORIZED);
+        }
+
+        if(FlowForgrStringUtil.isBlank(request.getWorkFlowName())) {
+            result = new ValidationResult(false, "Work flow name is required", HttpStatus.BAD_REQUEST);
+        }
+
+        if(ObjectUtils.isEmpty(request.getWorkFlowSteps())) {
+            result = new ValidationResult(false, "At least 1 valid step is required", HttpStatus.BAD_REQUEST);
+        }
+
+        List<String> requestStepNames = request.getWorkFlowSteps().stream().map(CreateWorkFlowStepsRequest::getStepName).toList();
+
+        for (String stepName : requestStepNames) {
+            if(FlowForgrStringUtil.isBlank(stepName)) {
+                result = new ValidationResult(false, "Step name is required", HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if(ObjectUtils.isEmpty(roleList)) {
+            result = new ValidationResult(false, "At least 1 valid step is required", HttpStatus.BAD_REQUEST);
+        }
+
+        if(roleList.size() != requestStepRoleIds.size()) {
+            result = new ValidationResult(false, "Invalid step detected", HttpStatus.BAD_REQUEST);
+        }
+
+        return result;
     }
 }

@@ -24,14 +24,17 @@ public class WorkFlow extends FlowForgrBaseEntity {
     @ColumnDefault(value = "''")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "worf_flow_step_mapping",
             joinColumns = {@JoinColumn(name = "work_flow_fk")},
             inverseJoinColumns = {@JoinColumn(name = "work_flow_step_fk") })
-    private Set<WorkFlowStep> roles = new HashSet<>();
+    private Set<WorkFlowStep> workFlowSteps = new HashSet<>();
 
     @Column(name = "work_flow_state")
     @ColumnDefault(value = "'Draft'")
     @Enumerated(EnumType.STRING)
     private WorkFlowState workFlowState;
+
+    @Column(name = "organization_fk")
+    private Long organizationFk;
 }

@@ -30,9 +30,6 @@ public class WorkFlowStep extends FlowForgrBaseEntity {
     @ColumnDefault(value = "0")
     private Long workFlowStepIndex;
 
-    @Column(name = "work_flow_fk")
-    private Long workFlowFk;
-
     @Column(name = "status")
     @ColumnDefault(value = "false")
     private boolean status;

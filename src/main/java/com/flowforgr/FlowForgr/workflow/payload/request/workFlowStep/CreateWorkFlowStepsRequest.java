@@ -24,6 +24,7 @@ public class CreateWorkFlowStepsRequest {
     @JsonProperty("stepDescription")
     private String stepDescription;
 
+    @NotNull(message = "Role id is required")
     @JsonProperty("roleId")
     private Long roleId;
 

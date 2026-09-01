@@ -40,6 +40,7 @@ public class WorkFlowStepHandlerImpl implements WorkFlowStepHandler {
         Long stepIndex = workFlowStepRepository.getLastStepIndex();
         request.setWorkFlowStepIndex(stepIndex + 1);
         WorkFlowStep workFlowStep = WorkFlowRecordBuilder.buildWorkFlowStepRecord(request, null, role);
+        workFlowStepRepository.createWorkFlowMapping(workFlowStep.getId(), request.getWorkFlowId());
         workFlowStepRepository.save(workFlowStep);
         return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse("Success", "Work flow step created successfully"));
     }
@@ -58,6 +59,7 @@ public class WorkFlowStepHandlerImpl implements WorkFlowStepHandler {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(createFailureResponse("Error", "Step not found"));
         }
         workFlowStep = WorkFlowRecordBuilder.buildWorkFlowStepRecord(request, workFlowStep, role);
+        workFlowStepRepository.createWorkFlowMapping(workFlowStep.getId(), request.getWorkFlowId());
         workFlowStepRepository.save(workFlowStep);
         return ResponseEntity.status(HttpStatus.CREATED).body(createSuccessResponse("Success", "Work flow step updated successfully"));
     }
