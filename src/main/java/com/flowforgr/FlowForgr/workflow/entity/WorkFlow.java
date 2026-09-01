@@ -24,7 +24,7 @@ public class WorkFlow extends FlowForgrBaseEntity {
     @ColumnDefault(value = "''")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "worf_flow_step_mapping",
             joinColumns = {@JoinColumn(name = "work_flow_fk")},
             inverseJoinColumns = {@JoinColumn(name = "work_flow_step_fk") })
